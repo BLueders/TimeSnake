@@ -6,9 +6,9 @@ public class GameTile : MonoBehaviour
 {
 	public bool isWalkable;
 
-	public bool isOccupied { get { return occupant != null; } }
+	public bool isOccupied { get { return occupants.Count != 0; } }
 
-	public TileObject occupant = null;
+	public List<TileObject> occupants = new List<TileObject>();
 
 	public int positionX;
 	public int positionY;

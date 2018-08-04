@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour
 	}
 
 	void Start(){
-		Snake.Instance.CreateWithLength (1, 1, 6);
+		Snake.Instance.CreateWithLength (1, 1, 3);
 	}
 
 }

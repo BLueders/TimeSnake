@@ -41,7 +41,13 @@ public class TiledGameMap : MonoBehaviour
 
 	public int height { get { return map.GetLength (1); } }
 
+	struct RemovalTileObject{
+		internal TileObject obj;
+		internal int x;
+		internal int y;
+	}
 
+	List<RemovalTileObject> removalList = new List<RemovalTileObject>();
 
 	void Awake ()
 	{
@@ -53,7 +59,13 @@ public class TiledGameMap : MonoBehaviour
 
 	public bool IsWalkable (int x, int y)
 	{
-		return map [x, y].isWalkable;
+		bool walkable = true;
+		foreach(TileObject obj in map[x,y].occupants){
+			if(obj.blockMovement){
+				walkable = false;
+			}
+		}
+		return map [x, y].isWalkable && walkable;
 	}
 
 	public bool IsOccupied (int x, int y)
@@ -63,17 +75,31 @@ public class TiledGameMap : MonoBehaviour
 
 	public bool IsFreeToOccupy (int x, int y)
 	{
-		return !IsOccupied (x, y) && IsWalkable (x, y);
+		return IsWalkable (x, y);
 	}
 
-	public void SetOccupant (int x, int y, TileObject obj)
+	public void AddOccupant (int x, int y, TileObject obj)
 	{
-		map [x, y].occupant = obj;
+		map [x, y].occupants.Add(obj);
 	}
 
-	public TileObject GetOccupant (int x, int y)
+	public void RemoveOccupant (int x, int y, TileObject obj)
 	{
-		return map [x, y].occupant;
+		map [x, y].occupants.Remove(obj);
+	}
+
+	public void RegisterOccupantForCleanRemoval(int x, int y, TileObject obj)
+	{
+		RemovalTileObject rObj;
+		rObj.obj = obj;
+		rObj.x = x;
+		rObj.y = y;
+		removalList.Add(rObj);
+	}
+
+	public List<TileObject> GetOccupants (int x, int y)
+	{
+		return map [x, y].occupants;
 	}
 
 	public GameTile GetTile (int x, int y)
@@ -111,6 +137,25 @@ public class TiledGameMap : MonoBehaviour
 	public bool hasMap ()
 	{
 		return map != null;
+	}
+
+	public void ExecutePhysicsStep(){
+		foreach(GameTile tile in map){
+			foreach(TileObject tileObj in tile.occupants){
+				foreach(TileObject overlapObject in tile.occupants){
+					if(tileObj != overlapObject){
+						tileObj.OnOverlap(overlapObject);
+					}
+				}
+			}
+		}
+	}
+
+	public void ClearUpGameBoard(){
+		foreach(RemovalTileObject rObj in removalList){
+			map[rObj.x, rObj.y].occupants.Remove(rObj.obj);
+		}
+		removalList.Clear();
 	}
 
 	void CreateFromScene ()

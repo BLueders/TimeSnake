@@ -20,9 +20,9 @@ GameObject:
   m_Component:
   - component: {fileID: 4200245348924364}
   - component: {fileID: 212813369311954638}
-  - component: {fileID: 114662673029776902}
+  - component: {fileID: 114919504405166486}
   m_Layer: 0
-  m_Name: SnakeHead
+  m_Name: SnakeTail
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -41,7 +41,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &114662673029776902
+--- !u!114 &114919504405166486
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -49,7 +49,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1003890645873138}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8ae78555ea6205245920521928b0a261, type: 3}
+  m_Script: {fileID: 11500000, guid: ef5f7d58d864c9749b340295985c866a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   positionX: 0
@@ -58,10 +58,10 @@ MonoBehaviour:
   sRenderer: {fileID: 0}
   facing: 0
   snake: {fileID: 0}
-  spriteUp: {fileID: 21300000, guid: 338dfd6c7b8cc604599b65f35226768b, type: 3}
-  spriteDown: {fileID: 21300004, guid: 338dfd6c7b8cc604599b65f35226768b, type: 3}
-  spriteLeft: {fileID: 21300006, guid: 338dfd6c7b8cc604599b65f35226768b, type: 3}
-  spriteRight: {fileID: 21300002, guid: 338dfd6c7b8cc604599b65f35226768b, type: 3}
+  spriteUp: {fileID: 21300008, guid: 338dfd6c7b8cc604599b65f35226768b, type: 3}
+  spriteDown: {fileID: 21300012, guid: 338dfd6c7b8cc604599b65f35226768b, type: 3}
+  spriteLeft: {fileID: 21300014, guid: 338dfd6c7b8cc604599b65f35226768b, type: 3}
+  spriteRight: {fileID: 21300010, guid: 338dfd6c7b8cc604599b65f35226768b, type: 3}
 --- !u!212 &212813369311954638
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -97,7 +97,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: 338dfd6c7b8cc604599b65f35226768b, type: 3}
+  m_Sprite: {fileID: 21300008, guid: 338dfd6c7b8cc604599b65f35226768b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
