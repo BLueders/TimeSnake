@@ -37,7 +37,9 @@ public class TiledGameMap : MonoBehaviour
 	public int tileWidth = 1;
 	public int tileHeight = 1;
 
-	public int width { get { return map.GetLength (0); } }
+    public PlayerStartLocation playerStartLocation;
+
+    public int width { get { return map.GetLength (0); } }
 
 	public int height { get { return map.GetLength (1); } }
 
@@ -55,27 +57,29 @@ public class TiledGameMap : MonoBehaviour
 		if (origin == OriginType.Scene) {
 			CreateFromScene ();
 		}
-	}
+        CreatePlayer();
+    }
 
-	public bool IsWalkable (int x, int y)
+    public bool IsBlocked(int x, int y) {
+        bool blocked = false;
+        foreach (TileObject obj in map[x, y].occupants)
+        {
+            if (obj.blockMovement)
+            {
+                blocked = true;
+            }
+        }
+        return blocked;
+    }
+
+    public bool IsWalkable (int x, int y)
 	{
-		bool walkable = true;
-		foreach(TileObject obj in map[x,y].occupants){
-			if(obj.blockMovement){
-				walkable = false;
-			}
-		}
-		return map [x, y].isWalkable && walkable;
+		return map [x, y].isWalkable;
 	}
 
 	public bool IsOccupied (int x, int y)
 	{
 		return map [x, y].isOccupied;
-	}
-
-	public bool IsFreeToOccupy (int x, int y)
-	{
-		return IsWalkable (x, y);
 	}
 
 	public void AddOccupant (int x, int y, TileObject obj)
@@ -192,12 +196,31 @@ public class TiledGameMap : MonoBehaviour
 			y = (int)(tile.transform.position.y - lowerY);
 			if (map [x, y] != null) {
 				Debug.LogError ("Duplicate tile: " + tile + " at: " + tile.transform.position + ". Exiting creation.");
-				break;
+                Debug.LogError("Duplicate tile: " + map[x, y] + " at: " + tile.transform.position + ". Exiting creation.");
+                map = null;
+                return;
 			}
 			Debug.Log ("Inserting " + tile + " at: " + x + ", " + y);
 			map [x, y] = tile;
 			tile.positionX = x;
 			tile.positionY = y;
 		}
+        
 	}
+
+    void CreatePlayer() {
+        PlayerStartLocation start = GameObject.FindObjectOfType<PlayerStartLocation>();
+        if (start == null)
+        {
+            Debug.LogError("No PlayerStartLocation found");
+            return;
+        }
+        start.positionX = WorldToGridX(start.transform.position);
+        start.positionY = WorldToGridY(start.transform.position);
+        Debug.Log("Found player start at: " + start.positionX + ", " + start.positionY);
+        playerStartLocation = start;
+        AddOccupant(start.positionX, start.positionY, start);
+        Snake.Instance.CreateWithLength(start.positionX, start.positionY, start.startSnakeLength);
+        Debug.Log("Created snake at: " + start.positionX + ", " + start.positionY + " with length: " + start.startSnakeLength);
+    }
 }

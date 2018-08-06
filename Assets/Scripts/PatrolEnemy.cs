@@ -30,7 +30,10 @@ public class PatrolEnemy : TileObject
 
     public override void OnOverlap(TileObject other)
     {
-
+        SnakeBodyPart snake = other.GetComponent<SnakeBodyPart>();
+        if (snake != null) {
+            GameManager.GameOver();
+        }
     }
 
     public bool Move()
@@ -73,7 +76,8 @@ public class PatrolEnemy : TileObject
         int newPosX = positionX + x;
         int newPosY = positionY + y;
 
-        bool canMove = TiledGameMap.Instance.IsInBounds(newPosX, newPosY) && TiledGameMap.Instance.IsWalkable(newPosX, newPosY);
+        bool canMove = TiledGameMap.Instance.IsInBounds(newPosX, newPosY) &&
+                       TiledGameMap.Instance.IsWalkable(newPosX, newPosY);
         if (!canMove)
         {
             return false;

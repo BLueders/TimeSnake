@@ -5,9 +5,25 @@ using System;
 
 public class Snake : MonoBehaviour
 {
-	public static Snake Instance;
-	
-	public SnakeHead headPrefab;
+    private static Snake _instance;
+
+    public static Snake Instance
+    {
+        get
+        {
+            if (_instance == null)
+            {
+                _instance = GameObject.FindObjectOfType<Snake>();
+            }
+            return _instance;
+        }
+        private set
+        {
+            _instance = value;
+        }
+    }
+
+    public SnakeHead headPrefab;
 	public SnakeMiddleBody middleBodyPrefab;
 	public SnakeTail tailPrefab;
 
@@ -49,6 +65,8 @@ public class Snake : MonoBehaviour
 	}
 
 	void Update(){
+        if (GameManager.state != GameState.Playing) return;
+
 		float inputX = Input.GetAxisRaw ("Horizontal");
 		float inputY = Input.GetAxisRaw ("Vertical");
 		bool moveSucceeded = false;
@@ -111,7 +129,12 @@ public class Snake : MonoBehaviour
 			return false;
 		}
 
-		if (!TiledGameMap.Instance.IsFreeToOccupy (newPosX, newPosY)) {
+        if (!TiledGameMap.Instance.IsWalkable(newPosX, newPosY))
+        {
+            return false;
+        }
+
+        if (TiledGameMap.Instance.IsBlocked (newPosX, newPosY)) {
 			return false;
 		}
 
@@ -198,13 +221,15 @@ public class Snake : MonoBehaviour
 
 		// remove tail if short enough
 		if(bodyParts.Count == 2){
+            TiledGameMap.Instance.RemoveOccupant(bodyParts[1].positionX, bodyParts[1].positionY, bodyParts[1]);
 			Destroy(bodyParts[1].gameObject);
 			bodyParts.RemoveAt(1);
 		}
 
 		// remove body part if long enough
 		if(bodyParts.Count > 2){
-			bodyParts[bodyParts.Count-1].MoveToGridPosition(bodyParts[bodyParts.Count-2].positionX, bodyParts[bodyParts.Count-2].positionY);
+            bodyParts[bodyParts.Count-1].MoveToGridPosition(bodyParts[bodyParts.Count-2].positionX, bodyParts[bodyParts.Count-2].positionY);
+            TiledGameMap.Instance.RemoveOccupant(bodyParts[bodyParts.Count - 2].positionX, bodyParts[bodyParts.Count - 2].positionY, bodyParts[bodyParts.Count - 2]);
 			Destroy(bodyParts[bodyParts.Count-2].gameObject);
 			bodyParts.RemoveAt(bodyParts.Count-2);
 			count--;

@@ -22,7 +22,7 @@ public abstract class SnakeBodyPart : TileObject
     }
 
 	public override void OnOverlap(TileObject other){
-		Debug.Log(this + " overlaps with " + other);
-	}
+
+    }
 }
 

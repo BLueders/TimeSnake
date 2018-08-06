@@ -54,6 +54,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   positionX: 0
   positionY: 0
+  blockMovement: 0
 --- !u!212 &212749113685154810
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -88,7 +89,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 12
   m_Sprite: {fileID: 21300028, guid: 338dfd6c7b8cc604599b65f35226768b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

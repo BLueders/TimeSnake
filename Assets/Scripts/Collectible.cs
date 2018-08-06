@@ -22,6 +22,10 @@ public class Collectible : TileObject
         if(snakePart != null){
             snakePart.snake.Collect(this);
             TiledGameMap.Instance.RegisterOccupantForCleanRemoval(positionX, positionY, this);
+            Collectible[] remaining = GameObject.FindObjectsOfType<Collectible>();
+            if (remaining.Length == 1) {
+                GameManager.NextLevel();
+            }
             Destroy(gameObject);
         }
     }
