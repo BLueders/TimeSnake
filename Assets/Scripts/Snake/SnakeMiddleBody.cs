@@ -11,6 +11,7 @@ public class SnakeMiddleBody : SnakeBodyPart
     public Sprite spriteRightUp;
     public Sprite spriteLeftDown;
     public Sprite spriteRightDown;
+    public Sprite spriteStacked;
 
     public override void UpdateGraphics(Direction facing, int preX, int preY, int postX, int postY)
     {
@@ -79,6 +80,9 @@ public class SnakeMiddleBody : SnakeBodyPart
             {
                 sRenderer.sprite = spriteVertical;
             }
+        }
+        if (deltaPostY == 0 && deltaPostX == 0) {
+            sRenderer.sprite = spriteStacked;
         }
     }
 }

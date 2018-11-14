@@ -62,6 +62,7 @@ MonoBehaviour:
   spriteDown: {fileID: 21300012, guid: 338dfd6c7b8cc604599b65f35226768b, type: 3}
   spriteLeft: {fileID: 21300014, guid: 338dfd6c7b8cc604599b65f35226768b, type: 3}
   spriteRight: {fileID: 21300010, guid: 338dfd6c7b8cc604599b65f35226768b, type: 3}
+  spriteStacked: {fileID: 21300030, guid: 338dfd6c7b8cc604599b65f35226768b, type: 3}
 --- !u!212 &212813369311954638
 SpriteRenderer:
   m_ObjectHideFlags: 1

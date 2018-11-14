@@ -17,7 +17,7 @@ TextureImporter:
     21300024: Snake_Vertical
     21300026: Snake_horizontal
     21300028: Snake_Rabbit
-    21300030: Snake_Grass
+    21300030: Snake_Stacked
   externalObjects: {}
   serializedVersion: 7
   mipmaps:
@@ -422,7 +422,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Snake_Grass
+      name: Snake_Stacked
       rect:
         serializedVersion: 2
         x: 48

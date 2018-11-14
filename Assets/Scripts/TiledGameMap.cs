@@ -24,14 +24,22 @@ public class TiledGameMap : MonoBehaviour
 	{
 		Scene
 	}
-
-	[MenuItem ("Tools/Create TiledGameMap from Scene")]
-	public static void CreateInEditor ()
+#if UNITY_EDITOR
+    [MenuItem ("Tools/Create TiledGameMap from Scene (save)")]
+#endif
+	public static void CreateInEditorSave ()
 	{
-		Instance.CreateFromScene ();
+		Instance.CreateFromScene (false);
 	}
+#if UNITY_EDITOR
+    [MenuItem("Tools/Create TiledGameMap from Scene (auto cleanup)")]
+#endif
+    public static void CreateInEditorAutoCleanUp()
+    {
+        Instance.CreateFromScene(true);
+    }
 
-	GameTile[,] map;
+    GameTile[,] map;
 
 	public OriginType origin;
 	public int tileWidth = 1;
@@ -55,7 +63,7 @@ public class TiledGameMap : MonoBehaviour
 	{
 		Instance = this;
 		if (origin == OriginType.Scene) {
-			CreateFromScene ();
+			CreateFromScene (false);
 		}
         CreatePlayer();
     }
@@ -162,7 +170,7 @@ public class TiledGameMap : MonoBehaviour
 		removalList.Clear();
 	}
 
-	void CreateFromScene ()
+    void CreateFromScene (bool autoCleanUp)
 	{
 		GameTile[] tiles = GameObject.FindObjectsOfType<GameTile> ();
 		int mapWidth = (int)Mathf.Sqrt (tiles.Length);
@@ -195,10 +203,17 @@ public class TiledGameMap : MonoBehaviour
 			x = (int)(tile.transform.position.x - lowerX);
 			y = (int)(tile.transform.position.y - lowerY);
 			if (map [x, y] != null) {
-				Debug.LogError ("Duplicate tile: " + tile + " at: " + tile.transform.position + ". Exiting creation.");
-                Debug.LogError("Duplicate tile: " + map[x, y] + " at: " + tile.transform.position + ". Exiting creation.");
-                map = null;
-                return;
+                if (autoCleanUp)
+                {
+                    Debug.LogWarning("Removed Duplicate tile: " + map[x, y] + " at: " + map[x, y].transform.position);
+                    DestroyImmediate(map[x, y].gameObject);
+                }
+                else {
+				    Debug.LogError ("Duplicate tile: " + tile + " at: " + tile.transform.position + ". Exiting creation.");
+                    Debug.LogError("Duplicate tile: " + map[x, y] + " at: " + tile.transform.position + ". Exiting creation.");
+                    map = null;
+                    return;
+                }
 			}
 			Debug.Log ("Inserting " + tile + " at: " + x + ", " + y);
 			map [x, y] = tile;

@@ -31,13 +31,9 @@ public class Snake : MonoBehaviour
 	float oldInputY;
 	Direction lastMovementDir;
 
-	void Awake(){
-		Instance = this;
-	}
-
-    public void Collect(Collectible collectible)
+    void Awake()
     {
-        ExtendSnake(1);
+        Instance = this;
     }
 
     // position 0 is head
@@ -152,7 +148,8 @@ public class Snake : MonoBehaviour
 	
 	void UpdateSnakeGraphics(Direction lastMoveDir){
 		if(bodyParts.Count == 0) return;
-		
+        if (Time.timeSinceLevelLoad < 0.5) return;
+
 		//update head
 		bodyParts[0].UpdateGraphics(lastMoveDir, 0, 0, 0, 0);
 
@@ -186,7 +183,7 @@ public class Snake : MonoBehaviour
 		}
 	}
 
-	void ExtendSnake(int count){
+	public void ExtendSnake(int count){
 		// add body part if long enough
 		if(bodyParts.Count > 1){
 			SnakeMiddleBody bodyPart = Instantiate<SnakeMiddleBody> (middleBodyPrefab, transform);
@@ -217,7 +214,7 @@ public class Snake : MonoBehaviour
 		}
 	}
 
-	void ReduceSnake(int count){
+    public void ReduceSnake(int count){
 
 		// remove tail if short enough
 		if(bodyParts.Count == 2){

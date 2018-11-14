@@ -5,17 +5,86 @@ using System;
 
 public enum GameState
 {
-    Menu, Pause, Playing, GameOver
+    Menu, Pause, Playing, GameOver, LevelComplete
 }
 
 public class GameManager : MonoBehaviour
 {
+    public GameObject gameOverScreen;
+    public GameObject levelCompleteScreen;
+    public GameState startState = GameState.Playing;
+
+    private static GameManager _instance;
+
+    public static GameManager Instance
+    {
+        get
+        {
+            if (_instance == null)
+            {
+                _instance = GameObject.FindObjectOfType<GameManager>();
+            }
+            return _instance;
+        }
+        private set
+        {
+            _instance = value;
+        }
+    }
+
+    void Awake()
+    {
+        Instance = this;
+        Instance.gameOverScreen.SetActive(false);
+        Instance.levelCompleteScreen.SetActive(false);
+        state = startState;
+        string currentLevelName = SceneManager.GetActiveScene().name;
+        
+        if (currentLevelName.Contains("Level")) {
+            currentLevel = int.Parse(currentLevelName[currentLevelName.Length - 1].ToString());
+        }
+    }
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            GoToMainMenu();
+            switch (state)
+            {
+                case GameState.Menu:
+                    break;
+                case GameState.Pause:
+                    UnPause();
+                    break;
+                case GameState.Playing:
+                    PauseGame();
+                    break;
+                case GameState.GameOver:
+                    RestartLevel();
+                    break;
+                case GameState.LevelComplete:
+                    RestartLevel();
+                    break;
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.Return)) {
+            switch (state)
+            {
+                case GameState.Menu:
+                    break;
+                case GameState.Pause:
+                    RestartLevel();
+                    break;
+                case GameState.Playing:
+                    RestartLevel();
+                    break;
+                case GameState.GameOver:
+                    RestartLevel();
+                    break;
+                case GameState.LevelComplete:
+                    NextLevel();
+                    break;
+            }
         }
     }
 
@@ -27,8 +96,25 @@ public class GameManager : MonoBehaviour
         if (state != GameState.GameOver)
         {
             state = GameState.GameOver;
-            GameObject obj = GameObject.FindGameObjectWithTag("GameOverScreen");
-            obj.transform.GetChild(0).gameObject.SetActive(true);
+            Instance.gameOverScreen.SetActive(true);
+            Instance.levelCompleteScreen.SetActive(false);
+        }
+    }
+
+    public static void CheckWinCondition() {
+        Treat[] remaining = GameObject.FindObjectsOfType<Treat>();
+        if (remaining.Length == 1)
+        {
+            GameManager.LevelComplete();
+        }
+    }
+
+    public static void LevelComplete()
+    {
+        if (state != GameState.LevelComplete && state != GameState.GameOver)
+        {
+            state = GameState.LevelComplete;
+            Instance.levelCompleteScreen.SetActive(true);
         }
     }
 
@@ -56,6 +142,12 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene("Level" + level);
     }
 
+    public static void RestartLevel() {
+        if (currentLevel != 0) {
+            StartLevel(currentLevel);
+        }
+    }
+
     public static void PauseGame()
     {
         state = GameState.Pause;
@@ -64,7 +156,11 @@ public class GameManager : MonoBehaviour
     public static void NextLevel()
     {
         currentLevel++;
-        StartLevel(currentLevel);
+        if (currentLevel <= 5)
+            StartLevel(currentLevel);
+        else {
+            GoToMainMenu();
+        }
     }
 
     public static void UnPause()
@@ -76,13 +172,6 @@ public class GameManager : MonoBehaviour
     {
         state = GameState.Menu;
         SceneManager.LoadScene("MainMenu");
-    }
-
-    public static GameManager Instance;
-
-    void Awake()
-    {
-        Instance = this;
     }
 }
 

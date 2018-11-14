@@ -9,6 +9,7 @@ public class SnakeTail : SnakeBodyPart
     public Sprite spriteDown;
     public Sprite spriteLeft;
     public Sprite spriteRight;
+    public Sprite spriteStacked;
 
     public override void UpdateGraphics(Direction facing, int preX, int preY, int postX, int postY)
     {
@@ -27,9 +28,12 @@ public class SnakeTail : SnakeBodyPart
         {
             sRenderer.sprite = spriteDown;
         }
-        else
+        else if (deltaY > 0)
         {
             sRenderer.sprite = spriteUp;
+        }
+        else {
+            sRenderer.sprite = spriteStacked;
         }
     }
 }
