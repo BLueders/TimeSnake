@@ -10,6 +10,9 @@ public abstract class TileObject : TimeStepObject
 	public bool blockMovement = false;
 
 	public void MoveToTilePosition(GameTile tile){
+		if(positionX == tile.positionX && positionY == tile.positionY){
+			return;
+		}
 		TiledGameMap.Instance.RemoveOccupant (positionX, positionY, this);
 		transform.position = tile.transform.position;
 		positionX = tile.positionX;

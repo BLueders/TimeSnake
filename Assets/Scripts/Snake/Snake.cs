@@ -57,7 +57,7 @@ public class Snake : MonoBehaviour
 		bodyParts.Add (head);
 		TiledGameMap.Instance.AddOccupant (x, y, head);
 		ExtendSnake(length-1);
-		UpdateSnakeGraphics(lastMovementDir);
+		UpdateSnakeGraphics(Direction.Up);
 	}
 
 	void Update(){
@@ -91,11 +91,12 @@ public class Snake : MonoBehaviour
 
 		if(Input.GetKeyDown(KeyCode.E)){
 			ExtendSnake(1);
-			UpdateSnakeGraphics(lastMovementDir);
 		}
 		if(Input.GetKeyDown(KeyCode.R)){
 			ReduceSnake(1);
-			UpdateSnakeGraphics(lastMovementDir);
+		}
+		if(Input.GetKeyDown(KeyCode.T)){
+			ReverseSnake();
 		}
 	}
 
@@ -140,6 +141,7 @@ public class Snake : MonoBehaviour
 			bodyParts [i].MoveToGridPosition (newPosX, newPosY);
 			newPosX = posX;
 			newPosY = posY;
+			Debug.Log("Moved: " + bodyParts[i] + " to x:" + posX + " y:" + posY);
 		}
 		lastMovementDir = dir;
 		UpdateSnakeGraphics(lastMovementDir);
@@ -184,7 +186,11 @@ public class Snake : MonoBehaviour
 	}
 
 	public void ExtendSnake(int count){
-		// add body part if long enough
+		ExtendSnakeRecursive(count);
+		UpdateSnakeGraphics(lastMovementDir);
+	}
+
+	private void ExtendSnakeRecursive(int count){
 		if(bodyParts.Count > 1){
 			SnakeMiddleBody bodyPart = Instantiate<SnakeMiddleBody> (middleBodyPrefab, transform);
 			bodyPart.Init(this);
@@ -192,10 +198,10 @@ public class Snake : MonoBehaviour
 			bodyPart.positionX = bodyParts[bodyParts.Count-1].positionX;
 			bodyPart.positionY = bodyParts[bodyParts.Count-1].positionY;
 			bodyParts.Insert (bodyParts.Count-1, bodyPart);
-			TiledGameMap.Instance.AddOccupant (bodyPart.positionX, bodyPart.positionY, bodyPart);
+			TiledGameMap.Instance.AddOccupantClean (bodyPart.positionX, bodyPart.positionY, bodyPart);
 			count--;
 			if(count > 0){
-				ExtendSnake(count);
+				ExtendSnakeRecursive(count);
 			}
 		}
 		// add tail of not
@@ -206,19 +212,23 @@ public class Snake : MonoBehaviour
 			tail.positionX = bodyParts[0].positionX;
 			tail.positionY = bodyParts[0].positionY;
 			bodyParts.Add (tail);
-			TiledGameMap.Instance.AddOccupant (tail.positionX, tail.positionY, tail);
+			TiledGameMap.Instance.AddOccupantClean (tail.positionX, tail.positionY, tail);
 			count--;
 			if(count > 0){
-				ExtendSnake(count);
+				ExtendSnakeRecursive(count);
 			}
 		}
 	}
 
     public void ReduceSnake(int count){
+		ReduceSnakeRecursive(count);
+		UpdateSnakeGraphics(lastMovementDir);
+	}
 
+	private void ReduceSnakeRecursive(int count){
 		// remove tail if short enough
 		if(bodyParts.Count == 2){
-            TiledGameMap.Instance.RemoveOccupant(bodyParts[1].positionX, bodyParts[1].positionY, bodyParts[1]);
+            TiledGameMap.Instance.RemoveOccupantClean(bodyParts[1].positionX, bodyParts[1].positionY, bodyParts[1]);
 			Destroy(bodyParts[1].gameObject);
 			bodyParts.RemoveAt(1);
 		}
@@ -226,16 +236,26 @@ public class Snake : MonoBehaviour
 		// remove body part if long enough
 		if(bodyParts.Count > 2){
             bodyParts[bodyParts.Count-1].MoveToGridPosition(bodyParts[bodyParts.Count-2].positionX, bodyParts[bodyParts.Count-2].positionY);
-            TiledGameMap.Instance.RemoveOccupant(bodyParts[bodyParts.Count - 2].positionX, bodyParts[bodyParts.Count - 2].positionY, bodyParts[bodyParts.Count - 2]);
+            TiledGameMap.Instance.RemoveOccupantClean(bodyParts[bodyParts.Count - 2].positionX, bodyParts[bodyParts.Count - 2].positionY, bodyParts[bodyParts.Count - 2]);
 			Destroy(bodyParts[bodyParts.Count-2].gameObject);
 			bodyParts.RemoveAt(bodyParts.Count-2);
 			count--;
 			if(count > 0){
-				ReduceSnake(count);
+				ReduceSnakeRecursive(count);
 			}
 		}
 
 		// else do noghting, head has to stay
+	}
+
+	public void ReverseSnake(){
+		for(int i = 0; i < bodyParts.Count/2; i++){
+			int posX = bodyParts[i].positionX;
+			int posY = bodyParts[i].positionY;
+			bodyParts[i].MoveToGridPosition(bodyParts[bodyParts.Count - i - 1].positionX, bodyParts[bodyParts.Count - i - 1].positionY);
+			bodyParts[bodyParts.Count - i - 1].MoveToGridPosition(posX, posY);
+		}
+		UpdateSnakeGraphics(lastMovementDir);
 	}
 }
 

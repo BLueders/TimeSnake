@@ -156,7 +156,7 @@ public class GameManager : MonoBehaviour
     public static void NextLevel()
     {
         currentLevel++;
-        if (currentLevel <= 5)
+        if (currentLevel <= 9)
             StartLevel(currentLevel);
         else {
             GoToMainMenu();

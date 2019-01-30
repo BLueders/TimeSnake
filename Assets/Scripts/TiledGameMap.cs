@@ -51,13 +51,14 @@ public class TiledGameMap : MonoBehaviour
 
 	public int height { get { return map.GetLength (1); } }
 
-	struct RemovalTileObject{
+	struct PositionedTileObject{
 		internal TileObject obj;
 		internal int x;
 		internal int y;
 	}
 
-	List<RemovalTileObject> removalList = new List<RemovalTileObject>();
+	List<PositionedTileObject> removalList = new List<PositionedTileObject>();
+	List<PositionedTileObject> additionList = new List<PositionedTileObject>();
 
 	void Awake ()
 	{
@@ -100,9 +101,29 @@ public class TiledGameMap : MonoBehaviour
 		map [x, y].occupants.Remove(obj);
 	}
 
-	public void RegisterOccupantForCleanRemoval(int x, int y, TileObject obj)
+/// <summary>
+/// Add new object to board after physics step
+/// </summary>
+/// <param name="x"></param>
+/// <param name="y"></param>
+/// <param name="obj"></param>
+	public void AddOccupantClean (int x, int y, TileObject obj)
 	{
-		RemovalTileObject rObj;
+		PositionedTileObject aObj;
+		aObj.obj = obj;
+		aObj.x = x;
+		aObj.y = y;
+		additionList.Add(aObj);
+	}
+/// <summary>
+/// Remove object from board after physics step
+/// </summary>
+/// <param name="x"></param>
+/// <param name="y"></param>
+/// <param name="obj"></param>
+	public void RemoveOccupantClean(int x, int y, TileObject obj)
+	{
+		PositionedTileObject rObj;
 		rObj.obj = obj;
 		rObj.x = x;
 		rObj.y = y;
@@ -163,8 +184,15 @@ public class TiledGameMap : MonoBehaviour
 		}
 	}
 
-	public void ClearUpGameBoard(){
-		foreach(RemovalTileObject rObj in removalList){
+	public void CleanAddObjectsToBoard(){
+		foreach(PositionedTileObject aObj in additionList){
+			map[aObj.x, aObj.y].occupants.Add(aObj.obj);
+		}
+		additionList.Clear();
+	}
+
+	public void CleanRemoveObjectsFromBoard(){
+		foreach(PositionedTileObject rObj in removalList){
 			map[rObj.x, rObj.y].occupants.Remove(rObj.obj);
 		}
 		removalList.Clear();

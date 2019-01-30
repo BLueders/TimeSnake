@@ -23,7 +23,7 @@ public class NegaTreat : Collectible
         if (snakePart != null)
         {
             snakePart.snake.ReduceSnake(1);
-            TiledGameMap.Instance.RegisterOccupantForCleanRemoval(positionX, positionY, this);
+            TiledGameMap.Instance.RemoveOccupantClean(positionX, positionY, this);
             Destroy(gameObject);
         }
     }

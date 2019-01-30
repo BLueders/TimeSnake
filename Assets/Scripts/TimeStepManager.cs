@@ -30,6 +30,7 @@ public class TimeStepManager {
 			stepObjects.RemoveAt(removedIndices[i]);
 		}
 		TiledGameMap.Instance.ExecutePhysicsStep();
-		TiledGameMap.Instance.ClearUpGameBoard();
+		TiledGameMap.Instance.CleanRemoveObjectsFromBoard();
+		TiledGameMap.Instance.CleanAddObjectsToBoard();
 	}
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Treat : Collectible {
+public class ReverserTreat : Collectible {
 
     public void Start()
     {
@@ -21,9 +21,8 @@ public class Treat : Collectible {
         SnakeBodyPart snakePart = other.GetComponent<SnakeBodyPart>();
         if (snakePart != null)
         {
-            snakePart.snake.ExtendSnake(1);
+            snakePart.snake.ReverseSnake();
             TiledGameMap.Instance.RemoveOccupantClean(positionX, positionY, this);
-            GameManager.CheckWinCondition();
             Destroy(gameObject);
         }
     }
